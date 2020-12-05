@@ -33,14 +33,13 @@ namespace UnityTestRedRift.View
         {
             _card = card;
 
-            OnTitleChanged(_card.Title.Value);
-            OnDescriptionChanged(_card.Description.Value);
+            textTitle.text = card.Title;
+            textDescription.text = card.Description;
+            
             OnAttackChanged(_card.Attack.Value);
             OnHpChanged(_card.Hp.Value);
             OnManaChanged(_card.Mana.Value);
-            
-            _card.Title.OnChanged += OnTitleChanged;
-            _card.Description.OnChanged += OnDescriptionChanged;
+
             _card.Attack.OnChanged += OnAttackChanged;
             _card.Hp.OnChanged += OnHpChanged;
             _card.Mana.OnChanged += OnManaChanged;
@@ -58,23 +57,33 @@ namespace UnityTestRedRift.View
             transform.DORotateQuaternion(rotation, Smooth);
         }
 
-        private void OnTitleChanged(string title) => textTitle.text = title;
+        private void OnAttackChanged(int attack) => SetCounter(textAttack, attack);
 
-        private void OnDescriptionChanged(string description) => textDescription.text = description;
-       
-        private void OnAttackChanged(int attack) => textAttack.text = attack.ToString();
+        private void OnHpChanged(int hp) => SetCounter(textHp,  hp);
 
-        private void OnHpChanged(int hp) => textHp.text = hp.ToString();
+        private void OnManaChanged(int mana) => SetCounter(textMana, mana);
 
-        private void OnManaChanged(int mana) => textMana.text = mana.ToString();
+        private void SetCounter(Text text, int value)
+        {
+            var initVal = int.Parse(text.text);
+            text.text = value.ToString();
+            var scale = text.transform.localScale;
+            if (initVal != value)
+            {
+                text.transform.DOScale(scale * 1.2f, Smooth).SetEase(Ease.OutBack);
+                // var sequence = DOTween.Sequence();
+                // sequence
+                //     .Append(text.transform.DOScale(scale * 1.2f, Smooth))
+                //     .Append(text.transform.DOScale(scale, Smooth));
+
+            }
+        }
         
         private void OnDestroy()
         {
             if(_card == null)
                 return;
-        
-            _card.Title.OnChanged = null;
-            _card.Description.OnChanged = null;
+            
             _card.Attack.OnChanged = null;
             _card.Hp.OnChanged = null;
             _card.Mana.OnChanged = null;

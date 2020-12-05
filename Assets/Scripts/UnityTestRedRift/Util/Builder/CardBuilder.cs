@@ -8,13 +8,12 @@ namespace UnityTestRedRift.Util.Builder
     {
         public Card BuildRandom(int index, GameSettings settings)
         {
-            var card = new Card(index);
-            
             var rndTitleIndex = Random.Range(0, settings.titles.Count - 1);
             var rndDescription = Random.Range(0, settings.descriptions.Count - 1);
 
-            card.Title.Value =  settings.titles[rndTitleIndex];
-            card.Description.Value = settings.descriptions[rndDescription];
+            var title =  settings.titles[rndTitleIndex];
+            var description = settings.descriptions[rndDescription];
+            var card = new Card(index, title, description);
             
             card.Attack.Value = Random.Range(settings.minValue, settings.maxValue);
             card.Hp.Value = Random.Range(settings.minValue, settings.maxValue);
