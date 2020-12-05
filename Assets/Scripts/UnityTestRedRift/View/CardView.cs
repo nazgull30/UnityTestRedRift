@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityTestRedRift.Model;
@@ -6,6 +7,8 @@ namespace UnityTestRedRift.View
 {
     public class CardView : MonoBehaviour
     {
+        private const float Smooth = 2;
+        
         public RawImage imageIcon;
         public RawImage imageAttack;
         public RawImage imageHp;
@@ -51,7 +54,8 @@ namespace UnityTestRedRift.View
         
         public void SetSmoothTransform(Vector3 position, Quaternion rotation)
         {
-
+            transform.DOMove(position, Smooth);
+            transform.DORotateQuaternion(rotation, Smooth);
         }
 
         private void OnTitleChanged(string title) => textTitle.text = title;
