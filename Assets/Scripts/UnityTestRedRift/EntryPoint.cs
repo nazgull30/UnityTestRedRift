@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityTestRedRift.Model;
 using UnityTestRedRift.Settings;
+using UnityTestRedRift.Util.Builder;
 
 namespace UnityTestRedRift
 {
@@ -13,7 +14,8 @@ namespace UnityTestRedRift
 
         private void Awake()
         {
-            var game = new Game(gameSettings);
+            var cardViewBuilder = new CardViewBuilder(handPosition);
+            var game = new Game(gameSettings, cardViewBuilder);
             game.Initialize();
 
             button.onClick.AddListener(() =>

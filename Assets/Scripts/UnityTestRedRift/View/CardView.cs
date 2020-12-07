@@ -10,15 +10,14 @@ namespace UnityTestRedRift.View
         private const float Smooth = 2;
         
         public RawImage imageIcon;
-        public RawImage imageAttack;
-        public RawImage imageHp;
-        public RawImage imageMana;
-        
+
         [SerializeField] private Text textTitle;
         [SerializeField] private Text textDescription;
         [SerializeField] private Text textAttack;
         [SerializeField] private Text textHp;
         [SerializeField] private Text textMana;
+        
+        [SerializeField] private int index;
 
         private RectTransform _rectTransform;
         
@@ -32,6 +31,7 @@ namespace UnityTestRedRift.View
         public void SetModel(Card card)
         {
             _card = card;
+            index = card.Index;
 
             textTitle.text = card.Title;
             textDescription.text = card.Description;
@@ -45,16 +45,28 @@ namespace UnityTestRedRift.View
             _card.Mana.OnChanged += OnManaChanged;
         }
 
-        public void SetTransform(Vector3 position, Quaternion rotation)
+        public void SetParent(RectTransform parent, Vector2 sizeDelta)
         {
-            _rectTransform.position = position;
-            _rectTransform.rotation = rotation;
+            _rectTransform.SetParent(parent);
+            _rectTransform.offsetMin = Vector2.zero;
+            _rectTransform.offsetMax = Vector2.zero;
+            _rectTransform.sizeDelta = sizeDelta;
+            _rectTransform.localScale = Vector3.one;
         }
         
-        public void SetSmoothTransform(Vector3 position, Quaternion rotation)
+        public void SetTransform(float positionX, float positionY, float rotationZ)
         {
-            transform.DOMove(position, Smooth);
-            transform.DORotateQuaternion(rotation, Smooth);
+            _rectTransform.anchoredPosition = new Vector2(positionX, positionY);
+            _rectTransform.rotation = Quaternion.Euler(0, 0, rotationZ);
+        }
+        
+        public void SetSmoothTransform(float positionX, float positionY, float rotationZ)
+        {
+            var tr = transform;
+            var pos = tr.position;
+            var rot = tr.rotation.eulerAngles;
+            transform.DOMove(new Vector3(positionX, pos.y, pos.z), Smooth);
+            transform.DOLocalRotate(new Vector3(rot.x, rot.y, rotationZ), Smooth);
         }
 
         private void OnAttackChanged(int attack) => SetCounter(textAttack, attack);

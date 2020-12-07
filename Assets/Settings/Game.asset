@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b864437f0ad7401983820445c3673718, type: 3}
+  m_Name: Game
+  m_EditorClassIdentifier: 
+  minCardCount: 4
+  maxCardCount: 6
+  distanceBetweenCards: 100
+  deltaRotation: 0.1
+  minChangeValue: -2
+  maxChangeValue: 9
+  cardPrefab: {fileID: 3035395162317882485, guid: 92d39c03f8bbd478db1d70655b168eae,
+    type: 3}
+  mainIconUrl: https://picsum.photos/50/100
+  titles:
+  - Best card ever
+  - Simple card
+  - Premium card
+  - Wow card
+  - What is this card..
+  - Very sick card
+  descriptions:
+  - This is Best card ever
+  - This is Simple card
+  - This is Premium card
+  - This is Wow card
+  - This is What is this card..
+  - This is Very sick card
+  minValue: 1
+  maxValue: 3

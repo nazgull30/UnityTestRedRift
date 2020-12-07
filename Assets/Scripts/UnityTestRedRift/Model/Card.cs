@@ -10,8 +10,6 @@ namespace UnityTestRedRift.Model
         public Property<int> Attack { get; } = new Property<int>();
         public Property<int> Hp { get; } = new Property<int>();
         public Property<int> Mana { get; } = new Property<int>();
-        
-        public Property<bool> IsDragging { get; } = new Property<bool>();
 
         public Card(int index, string title, string description)
         {

@@ -15,29 +15,29 @@ namespace UnityTestRedRift.Model
         private readonly GameSettings _settings;
         
         private readonly CardBuilder _cardBuilder = new CardBuilder();
-        private readonly CardViewBuilder _cardViewBuilder = new CardViewBuilder();
+        private readonly CardViewBuilder _cardViewBuilder;
         private readonly CardTransformCalculator _cardTransformCalculator = new CardTransformCalculator();
         
         private int _currentCardIndexChangeValue;
 
-        public Game(GameSettings settings)
+        public Game(GameSettings settings, CardViewBuilder cardViewBuilder)
         {
             _settings = settings;
+            _cardViewBuilder = cardViewBuilder;
         }
 
         public void Initialize()
         {
-            var cardCount = Random.Range(_settings.minCardCount, _settings.maxCardCount);
-            for (var i = 1; i <= cardCount; i++)
+            for (var i = 1; i <= _settings.cardCount; i++)
             {
-                CreateCard(i, cardCount);
+                CreateCard(i);
             }
         }
 
         public void ChangeNextChardRandomValue()
         {
-            var rndValue = Random.Range(_settings.minValue, _settings.maxValue);
-            var rdPropertyIndex = Random.Range(1, 3);
+            var rndValue = Random.Range(_settings.minChangeValue, _settings.maxChangeValue + 1);
+            var rdPropertyIndex = Random.Range(1, 4);
             var card = _cards[_currentCardIndexChangeValue];
             switch (rdPropertyIndex)
             {
@@ -57,13 +57,14 @@ namespace UnityTestRedRift.Model
                 : _currentCardIndexChangeValue++;
         }
 
-        private void CreateCard(int index, int cardCount)
+        private void CreateCard(int index)
         {
             var card = _cardBuilder.BuildRandom(index, _settings);
             card.Hp.OnChanged += hp => OnCardHpChanged(hp, card);
-            var position = _cardTransformCalculator.CalcPosition(index, cardCount);
-            var rotation = _cardTransformCalculator.CalcRotation(index, cardCount);
-            var cardView = _cardViewBuilder.Build(card, _settings, position, rotation);
+            var positionX = _cardTransformCalculator.CalcPositionX(index, _settings.cardCount, _settings.distanceBetweenCards);
+            var positionY = _cardTransformCalculator.CalcPositionY(index, _settings.cardCount, _settings.deltaPosY);
+            var rotationZ = _cardTransformCalculator.CalcRotationZ(index, _settings.cardCount, _settings.deltaRotation);
+            var cardView = _cardViewBuilder.Build(card, _settings, positionX, positionY, rotationZ);
             _cards.Add(card);
             _cardViews.Add(index, cardView);
         }
@@ -84,9 +85,9 @@ namespace UnityTestRedRift.Model
             var index = 0;
             foreach (var cardView in _cardViews.Values)
             {
-                var position = _cardTransformCalculator.CalcPosition(index, _cardViews.Count);
-                var rotation = _cardTransformCalculator.CalcRotation(index, _cardViews.Count);
-                cardView.SetSmoothTransform(position, rotation);
+                var positionX = _cardTransformCalculator.CalcPositionX(index, _cardViews.Count, _settings.distanceBetweenCards);
+                var rotationZ = _cardTransformCalculator.CalcRotationZ(index, _cardViews.Count, _settings.deltaRotation);
+                cardView.SetSmoothTransform(positionX, 0, rotationZ);
                 index++;
             }
         }
