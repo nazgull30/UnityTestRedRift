@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityTestRedRift.Settings;
 using UnityTestRedRift.Util;
@@ -19,7 +18,7 @@ namespace UnityTestRedRift.Model
         private readonly CardViewBuilder _cardViewBuilder;
         private readonly CardTransformCalculator _cardTransformCalculator = new CardTransformCalculator();
         
-        private int _currentCardIndexChangeValue = 1;
+        private int _currentCardIndexChangeValue;
 
         public Game(GameSettings settings, CardViewBuilder cardViewBuilder)
         {
@@ -41,21 +40,20 @@ namespace UnityTestRedRift.Model
             var rndValue = Random.Range(_settings.minChangeValue, _settings.maxChangeValue + 1);
             var rdPropertyIndex = Random.Range(1, 4);
             var card = _cards[_currentCardIndexChangeValue];
-            card.Hp.Value = -2;
-            // switch (rdPropertyIndex)
-            // {
-            //     case 1:
-            //         card.Attack.Value = rndValue;
-            //         break;
-            //     case 2:
-            //         card.Hp.Value = rndValue;
-            //         break;
-            //     case 3:
-            //         card.Mana.Value = rndValue;
-            //         break;
-            // }
+            switch (rdPropertyIndex)
+            {
+                case 1:
+                    card.Attack.Value = rndValue;
+                    break;
+                case 2:
+                    card.Hp.Value = rndValue;
+                    break;
+                case 3:
+                    card.Mana.Value = rndValue;
+                    break;
+            }
 
-            _currentCardIndexChangeValue = _currentCardIndexChangeValue == _cards.Count
+            _currentCardIndexChangeValue = _currentCardIndexChangeValue >= _cards.Count - 1
                 ? 0
                 : _currentCardIndexChangeValue + 1;
         }
@@ -100,7 +98,7 @@ namespace UnityTestRedRift.Model
                 }
                 else
                 {
-                    cardView.SetIstantTransform(positionX, positionY, rotationZ);
+                    cardView.SetInstantTransform(positionX, positionY, rotationZ);
                 }
                 counter++;
             }

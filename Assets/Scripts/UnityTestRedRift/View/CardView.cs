@@ -7,7 +7,8 @@ namespace UnityTestRedRift.View
 {
     public class CardView : MonoBehaviour
     {
-        private const float Smooth = 2;
+        private const float ScaleSmooth = 0.6f;
+        private const float TransformSmooth = 0.8f;
         
         public RawImage imageIcon;
 
@@ -54,7 +55,7 @@ namespace UnityTestRedRift.View
             _rectTransform.localScale = Vector3.one;
         }
         
-        public void SetIstantTransform(float positionX, float positionY, float rotationZ)
+        public void SetInstantTransform(float positionX, float positionY, float rotationZ)
         {
             _rectTransform.anchoredPosition = new Vector2(positionX, positionY);
             _rectTransform.rotation = Quaternion.Euler(0, 0, rotationZ);
@@ -62,10 +63,10 @@ namespace UnityTestRedRift.View
         
         public void SetSmoothTransform(float positionX, float positionY, float rotationZ)
         {
-            _rectTransform.DOAnchorPosX(positionX, Smooth);
-            _rectTransform.DOAnchorPosY(positionY, Smooth);
+            _rectTransform.DOAnchorPosX(positionX, TransformSmooth);
+            _rectTransform.DOAnchorPosY(positionY, TransformSmooth);
             var rot = _rectTransform.rotation.eulerAngles;
-            _rectTransform.DOLocalRotate(new Vector3(rot.x, rot.y, rotationZ), Smooth);
+            _rectTransform.DOLocalRotate(new Vector3(rot.x, rot.y, rotationZ), TransformSmooth);
         }
 
         private void OnAttackChanged(int attack) => SetCounter(textAttack, attack);
@@ -76,18 +77,12 @@ namespace UnityTestRedRift.View
 
         private void SetCounter(Text text, int value)
         {
-            var initVal = int.Parse(text.text);
             text.text = value.ToString();
             var scale = text.transform.localScale;
-            if (initVal != value)
-            {
-                text.transform.DOScale(scale * 1.2f, Smooth).SetEase(Ease.OutBack);
-                // var sequence = DOTween.Sequence();
-                // sequence
-                //     .Append(text.transform.DOScale(scale * 1.2f, Smooth))
-                //     .Append(text.transform.DOScale(scale, Smooth));
-
-            }
+            var sequence = DOTween.Sequence();
+            sequence
+                .Append(text.transform.DOScale(scale * 1.5f, ScaleSmooth))
+                .Append(text.transform.DOScale(scale, ScaleSmooth));
         }
         
         private void OnDestroy()
