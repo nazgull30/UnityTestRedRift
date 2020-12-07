@@ -17,7 +17,7 @@ namespace UnityTestRedRift.View
         [SerializeField] private Text textHp;
         [SerializeField] private Text textMana;
         
-        [SerializeField] private int index;
+        [SerializeField] public int index;
 
         private RectTransform _rectTransform;
         
@@ -54,7 +54,7 @@ namespace UnityTestRedRift.View
             _rectTransform.localScale = Vector3.one;
         }
         
-        public void SetTransform(float positionX, float positionY, float rotationZ)
+        public void SetIstantTransform(float positionX, float positionY, float rotationZ)
         {
             _rectTransform.anchoredPosition = new Vector2(positionX, positionY);
             _rectTransform.rotation = Quaternion.Euler(0, 0, rotationZ);
@@ -62,11 +62,10 @@ namespace UnityTestRedRift.View
         
         public void SetSmoothTransform(float positionX, float positionY, float rotationZ)
         {
-            var tr = transform;
-            var pos = tr.position;
-            var rot = tr.rotation.eulerAngles;
-            transform.DOMove(new Vector3(positionX, pos.y, pos.z), Smooth);
-            transform.DOLocalRotate(new Vector3(rot.x, rot.y, rotationZ), Smooth);
+            _rectTransform.DOAnchorPosX(positionX, Smooth);
+            _rectTransform.DOAnchorPosY(positionY, Smooth);
+            var rot = _rectTransform.rotation.eulerAngles;
+            _rectTransform.DOLocalRotate(new Vector3(rot.x, rot.y, rotationZ), Smooth);
         }
 
         private void OnAttackChanged(int attack) => SetCounter(textAttack, attack);

@@ -17,13 +17,12 @@ namespace UnityTestRedRift.Util.Builder
             _hand = hand;
         }
 
-        public CardView Build(Card card, GameSettings settings, float positionX, float positionY, float rotationZ)
+        public CardView Build(Card card, GameSettings settings)
         {
             var cardView = Object.Instantiate(settings.cardPrefab);
             cardView.SetModel(card);
             var sizeDelta = settings.cardPrefab.GetComponent<RectTransform>().sizeDelta;
             cardView.SetParent(_hand, sizeDelta);
-            cardView.SetTransform(positionX, positionY, rotationZ);
             SetImageTextureByUrl(cardView.imageIcon, settings.mainIconUrl);
 
             return cardView;

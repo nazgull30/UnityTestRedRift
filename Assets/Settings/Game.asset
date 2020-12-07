@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b864437f0ad7401983820445c3673718, type: 3}
   m_Name: Game
   m_EditorClassIdentifier: 
-  minCardCount: 4
-  maxCardCount: 6
+  cardCount: 6
   distanceBetweenCards: 100
-  deltaRotation: 0.1
+  deltaRotation: 4
+  deltaPosY: 7
   minChangeValue: -2
   maxChangeValue: 9
   cardPrefab: {fileID: 3035395162317882485, guid: 92d39c03f8bbd478db1d70655b168eae,

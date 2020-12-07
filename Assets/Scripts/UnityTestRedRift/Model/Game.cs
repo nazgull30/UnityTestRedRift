@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityTestRedRift.Settings;
 using UnityTestRedRift.Util;
@@ -18,7 +19,7 @@ namespace UnityTestRedRift.Model
         private readonly CardViewBuilder _cardViewBuilder;
         private readonly CardTransformCalculator _cardTransformCalculator = new CardTransformCalculator();
         
-        private int _currentCardIndexChangeValue;
+        private int _currentCardIndexChangeValue = 1;
 
         public Game(GameSettings settings, CardViewBuilder cardViewBuilder)
         {
@@ -32,6 +33,7 @@ namespace UnityTestRedRift.Model
             {
                 CreateCard(i);
             }
+            RecalculateCardTransforms(false);
         }
 
         public void ChangeNextChardRandomValue()
@@ -39,39 +41,37 @@ namespace UnityTestRedRift.Model
             var rndValue = Random.Range(_settings.minChangeValue, _settings.maxChangeValue + 1);
             var rdPropertyIndex = Random.Range(1, 4);
             var card = _cards[_currentCardIndexChangeValue];
-            switch (rdPropertyIndex)
-            {
-                case 1:
-                    card.Attack.Value = rndValue;
-                    break;
-                case 2:
-                    card.Hp.Value = rndValue;
-                    break;
-                case 3:
-                    card.Mana.Value = rndValue;
-                    break;
-            }
+            card.Hp.Value = -2;
+            // switch (rdPropertyIndex)
+            // {
+            //     case 1:
+            //         card.Attack.Value = rndValue;
+            //         break;
+            //     case 2:
+            //         card.Hp.Value = rndValue;
+            //         break;
+            //     case 3:
+            //         card.Mana.Value = rndValue;
+            //         break;
+            // }
 
             _currentCardIndexChangeValue = _currentCardIndexChangeValue == _cards.Count
                 ? 0
-                : _currentCardIndexChangeValue++;
+                : _currentCardIndexChangeValue + 1;
         }
 
         private void CreateCard(int index)
         {
             var card = _cardBuilder.BuildRandom(index, _settings);
             card.Hp.OnChanged += hp => OnCardHpChanged(hp, card);
-            var positionX = _cardTransformCalculator.CalcPositionX(index, _settings.cardCount, _settings.distanceBetweenCards);
-            var positionY = _cardTransformCalculator.CalcPositionY(index, _settings.cardCount, _settings.deltaPosY);
-            var rotationZ = _cardTransformCalculator.CalcRotationZ(index, _settings.cardCount, _settings.deltaRotation);
-            var cardView = _cardViewBuilder.Build(card, _settings, positionX, positionY, rotationZ);
+            var cardView = _cardViewBuilder.Build(card, _settings);
             _cards.Add(card);
             _cardViews.Add(index, cardView);
         }
 
         private void OnCardHpChanged(int hp, Card card)
         {
-            if (hp == 0)
+            if (hp <= 0)
             {
                 RemoveCard(card);
             }
@@ -81,14 +81,28 @@ namespace UnityTestRedRift.Model
         {
             _cards.Remove(card);
             Object.Destroy(_cardViews[card.Index].gameObject);
+            _cardViews.Remove(card.Index);
+            
+            RecalculateCardTransforms(true);
+        }
 
-            var index = 0;
+        private void RecalculateCardTransforms(bool smooth)
+        {
+            var counter = 1;
             foreach (var cardView in _cardViews.Values)
             {
-                var positionX = _cardTransformCalculator.CalcPositionX(index, _cardViews.Count, _settings.distanceBetweenCards);
-                var rotationZ = _cardTransformCalculator.CalcRotationZ(index, _cardViews.Count, _settings.deltaRotation);
-                cardView.SetSmoothTransform(positionX, 0, rotationZ);
-                index++;
+                var positionX = _cardTransformCalculator.CalcPositionX(counter, _cardViews.Count, _settings.distanceBetweenCards);
+                var positionY = _cardTransformCalculator.CalcPositionY(counter, _cardViews.Count, _settings.deltaPosY);
+                var rotationZ = _cardTransformCalculator.CalcRotationZ(counter, _cardViews.Count, _settings.deltaRotation);
+                if (smooth)
+                {
+                    cardView.SetSmoothTransform(positionX, positionY, rotationZ);   
+                }
+                else
+                {
+                    cardView.SetIstantTransform(positionX, positionY, rotationZ);
+                }
+                counter++;
             }
         }
     }
